@@ -37,6 +37,10 @@ const UserModel = sequlize.define("User", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  isVerifed: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
