@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 import { Sequelize } from "sequelize";
 
-const connectDB1 = async () => {
-  const sequlize = new Sequelize("talker", "root", "9643@Hexaview", {
+const sequlize = new Sequelize("talker", "root", '9643@Hexaview', {
     host: "localhost",
     dialect: "mysql",
   });
+
+const connectDB1 = async () => {
   try {
     await sequlize.authenticate();
     console.log("MySQL Connected");
@@ -25,4 +26,4 @@ const connectDB2 = async () => {
   }
 };
 
-export { connectDB1, connectDB2 };
+export { connectDB1, connectDB2, sequlize};
