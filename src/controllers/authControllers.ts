@@ -3,16 +3,19 @@ import UserModel from '../models/userModel';
 import { emailPattern } from '../helpers/patters';
 import bcrypt from 'bcrypt';
 import { Op } from 'sequelize';
+import jwt from 'jsonwebtoken';
 
 const signUpController = async (req: Request, res: Response) => {
     const {firstName, lastName, email, userName, password} = req.body;
 
     if (!firstName || !lastName || !email || !userName || !password) {
-        return res.status(400).send({message: 'Please provide all required details!'});
+        res.status(400).send({message: 'Please provide all required details!'});
+        return;
     }
 
     if (!emailPattern.test(email)) {
-        return res.status(400).send({message: 'Invalid email format!'});
+        res.status(400).send({message: 'Invalid email format!'});
+        return;
     }
 
     try {
@@ -24,7 +27,8 @@ const signUpController = async (req: Request, res: Response) => {
 
         if (existingUser) {
             const conflictField = existingUser.userName === userName ? 'Username' : 'Email';
-            return res.status(409).send({error: `${conflictField} already in use!`});
+            res.status(409).send({error: `${conflictField} already in use!`});
+            return;
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,8 +39,37 @@ const signUpController = async (req: Request, res: Response) => {
     }
 }
 
-const signInController = (req: Request, res: Response) => {
-    res.status(200).send({message: 'Sign in route working'});
+const signInController = async (req: Request, res: Response) => {
+    const {userName, password} = req.body;
+
+    if(!userName || !password){
+        res.status(400).send({error: 'Required fields not provided'});
+        return;
+    }
+    try{
+        const user: any = await UserModel.findOne({where: {userName}});
+        if(!user){
+            res.status(404).send({error: `userName doesn't exist`});
+            return;
+        }
+        const isMatched = await bcrypt.compare(password, user.password);
+        if(!isMatched){
+            res.status(401).send({error: 'Unauth password incorrect'});
+            return;
+        }
+        const userObj = {
+            userName: user.userName,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName
+        }
+        const secretVal = process.env.SECRET_KEY || 'dummySecret';
+        const tokenVal = jwt.sign(userObj, secretVal, {expiresIn: '1h'});
+        res.status(200).send({user: userObj, auth: tokenVal});
+    }
+    catch{
+        res.status(500).send({error: 'Internal server error'});
+    }
 }
 
 const forgotPasswordController = (req: Request, res: Response) => {
