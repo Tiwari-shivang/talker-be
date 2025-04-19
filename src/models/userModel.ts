@@ -3,8 +3,8 @@ import { sequlize } from "../db_connect/dbConnect";
 
 const UserModel = sequlize.define("User", {
   id: {
-    type: DataTypes.STRING,
-    autoIncrement: true,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV1,
     primaryKey: true,
   },
   firstName: {
@@ -31,11 +31,9 @@ const UserModel = sequlize.define("User", {
   },
   phone: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   gender: {
     type: DataTypes.STRING,
-    allowNull: false,
   },
   isVerifed: {
     type: DataTypes.BOOLEAN,
