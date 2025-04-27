@@ -79,7 +79,9 @@ const signInController = async (req: Request, res: Response) => {
   }
 };
 
-const forgotPasswordController = async (req: Request, res: Response) => {};
+const forgotPasswordController = async (req: Request, res: Response) => {
+  res.status(200).send({ message: "Forgot password route working" });
+};
 
 const verifyemailController = async (req: Request, res: Response) => {
   const { email } = req.body;

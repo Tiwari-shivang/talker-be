@@ -33,6 +33,14 @@ const ChatModel = new Schema({
       },
     },
   ],
+  uuid1: {
+    type: String,
+    required: true,
+  },
+  uuid2: {
+    type: String,
+    required: true,
+  }
 });
 
 export default ChatModel;
