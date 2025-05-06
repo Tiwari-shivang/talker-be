@@ -7,6 +7,10 @@ const NotificationModel = sequlize.define("notificationModel", {
     autoIncrement: true,
     primaryKey: true,
   },
+  message: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   senderID: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -14,6 +18,10 @@ const NotificationModel = sequlize.define("notificationModel", {
   receiverID: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  isRead: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
   createdAt: {
     type: DataTypes.DATE,
