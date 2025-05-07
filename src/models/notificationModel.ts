@@ -1,10 +1,10 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, UUIDV1 } from "sequelize";
 import { sequlize } from "../db_connect/dbConnect";
 
 const NotificationModel = sequlize.define("notificationModel", {
   id: {
-    type: DataTypes.STRING,
-    autoIncrement: true,
+    type: DataTypes.UUID,
+    defaultValue: UUIDV1,
     primaryKey: true,
   },
   message: {

@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { connectDB1, connectDB2 } from "./src/db_connect/dbConnect";
 import router from "./src/routes";
 import { createServer } from "http";
-import initializeSocket from "./socket";
+import { initializeSocket } from "./socket";
 
 const app: Application = express();
 app.use(express.json());
