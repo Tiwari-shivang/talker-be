@@ -66,6 +66,7 @@ const signInController = async (req: Request, res: Response) => {
       return;
     }
     const userObj = {
+      id: user.id,
       userName: user.userName,
       email: user.email,
       firstName: user.firstName,

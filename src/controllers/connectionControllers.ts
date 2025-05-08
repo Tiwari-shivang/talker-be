@@ -1,5 +1,6 @@
 import {Response, Request} from 'express';
 import ConnectionReqModel from '../models/connectionReqModel';
+import { handlePushNotification } from './notificationsController';
 
 export const sendConnectionRequest = async (req: Request, res: Response) => {
     const {receiverID, senderID} = req.body;
@@ -20,12 +21,11 @@ export const sendConnectionRequest = async (req: Request, res: Response) => {
             senderID,
             receiverID
         });
-        res.status(201).send({message: "Request created successfully"});
-        return;
+        const notifyString = `Connection request received`;
+        handlePushNotification(req, res, notifyString);
     }
     catch(error){
         console.error("Error creating connection request:", error);
         res.status(500).send({error: "Internal server error"});
-        return;
     }
 }
