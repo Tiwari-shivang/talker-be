@@ -8,9 +8,16 @@ export const initializeSocket = (server: Server) => {
     io = new SocketServer(server, {cors: {allowedHeaders: '*', methods: ['GET', 'POST']}});
     io.on('connection', (socket) => {
         const {token}: any = socket.handshake.query;
-        jwt.verify(token, process.env.SECRET_KEY || 'my secret key', (err: any, decoded: any) => {
+        let tokenVal = ''
+        if(token.startsWith('"')){
+            tokenVal = token.slice(1, -1)
+        }
+        else{
+            tokenVal = token;
+        }
+        jwt.verify(tokenVal, process.env.SECRET_KEY || 'TWVyaSBKYWFuIFl1a3RhYWEgYmFieQ==', (err: any, decoded: any) => {
             if(err){
-                console.log('Unauth user');
+                console.log(err);
                 socket.disconnect();
                 return;
             }

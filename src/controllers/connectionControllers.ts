@@ -2,6 +2,8 @@ import { Response, Request } from "express";
 import ConnectionReqModel from "../models/connectionReqModel";
 import { handlePushNotification } from "./notificationsController";
 import UserModel from "../models/userModel";
+import jwt from 'jsonwebtoken';
+import { Op } from "sequelize";
 
 export const sendConnectionRequest = async (req: Request, res: Response) => {
   const { receiverID, senderID } = req.body;
@@ -21,7 +23,16 @@ export const sendConnectionRequest = async (req: Request, res: Response) => {
       senderID,
       receiverID,
     });
-    const notifyString = `Connection request received`;
+    let userName = '';
+    const tokenVal = req.headers['authorization']?.split(' ')[1] || '';
+    jwt.verify(tokenVal, process.env.SECRET_KEY || '', (err, decoded:any) => {
+        if(err){
+            res.status(401).send({error: 'Unauth'})
+            return;
+        }
+        userName = decoded && decoded.userName ? decoded.userName : 'unknown';
+    })
+    const notifyString = `Connection request received from ${userName}`;
     handlePushNotification(req, res, notifyString);
   } catch (error) {
     console.error("Error creating connection request:", error);
@@ -48,3 +59,27 @@ export const viewProfile = async (req: Request, res: Response) => {
   }
   res.status(404).send({ error: "Connection not found" });
 };
+
+export const getAllConnections = async (req: Request, res: Response) => {
+    let userName = '';
+    const tokenVal = req.headers['authorization']?.split(' ')[1] || '';
+    jwt.verify(tokenVal, process.env.SECRET_KEY || '', (err, decoded:any) => {
+        if(err){
+            res.status(401).send({error: 'Unauth'})
+            return;
+        }
+        userName = decoded && decoded.userName ? decoded.userName : 'unknown';
+    })
+    try{
+        const data = await UserModel.findAll({where: {
+            userName: {
+                [Op.ne]: userName
+            }
+        }, attributes: {exclude: ['password']}, raw: true})
+        res.status(200).send({connections: data})
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).send({error: 'Internal server error'})
+    }
+}
