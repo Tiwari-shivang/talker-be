@@ -16,8 +16,8 @@ const ConnectionReqModel = sequlize.define("connectionReq", {
     allowNull: false,
   },
   status: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    type: DataTypes.STRING,
+    defaultValue: 'pending'
   },
   createdAt: {
     type: DataTypes.DATE,
