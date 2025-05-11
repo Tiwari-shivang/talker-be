@@ -77,3 +77,18 @@ export const getAllConnections = async (req: any, res: Response) => {
     res.status(500).send({ error: "Internal server error" });
   }
 };
+
+export const getAllRequests = async (req: any, res: Response) => {
+    const {status} = req.query;
+    if(!status){
+        res.status(400).send({error: "Please provide value for status"});
+        return;
+    }
+    const data = await ConnectionReqModel.findAll({where: {
+        [Op.and]: [
+            {receiverID: req.user.id},
+            {status: req.query.status}
+        ]
+    }, raw: true});
+    res.status(200).send({requests: data, records: data.length});
+}
