@@ -66,12 +66,13 @@ const signInController = async (req: Request, res: Response) => {
       return;
     }
     const userObj = {
+      id: user.id,
       userName: user.userName,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
     };
-    const secretVal = process.env.SECRET_KEY || "dummySecret";
+    const secretVal = process.env.SECRET_KEY || "my secret key";
     const tokenVal = jwt.sign(userObj, secretVal, { expiresIn: "1h" });
     res.status(200).send({ user: userObj, auth: tokenVal });
   } catch {
